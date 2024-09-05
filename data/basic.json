@@ -1,0 +1,32 @@
+{
+    "Funerius": {
+        "initiative": 2,
+		"hp": 50,
+        "notes": ""
+    },
+    "Calcamus": {
+        "initiative": 0,
+		"hp": 50,
+        "notes": ""
+    },
+    "Thaemesis": {
+        "initiative": 3,
+		"hp": 50,
+        "notes": ""
+    },
+    "Darius": {
+        "initiative": 1,
+		"hp": 46,
+        "notes": ""
+    },
+    "Ico": {
+        "initiative": 1,
+		"hp": 50,
+        "notes": ""
+    },
+    "Corwin": {
+        "initiative": 2,
+		"hp": 38,
+        "notes": ""
+    }
+}
