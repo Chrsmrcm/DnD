@@ -79,13 +79,27 @@ def print_menu():
     print("Press ENTER to pass turn\n")
 
 '''
+changes from key:[val,ues] to key:{val:u,e:s} for easier storage/retrieval
+'''
+def format_dict(combat_dict: dict) -> dict:
+    new = {}
+    for key in combat_dict:
+        new[key] = {"initiative":combat_dict[key][0],
+                    "hp":combat_dict[key][1],
+                    "notes":combat_dict[key][2]}
+    return new
+    
+'''
 saves the current combat dictionary as a json file in data
 '''   
 def save(combat_dict: dict):
     file_name = input("What would you like to call the file? ") + ".json"
     path = Path.cwd() / "data" / file_name
+    
+    new = format_dict(combat_dict)
+    
     with open(path, "w") as outfile: 
-        json.dump(combat_dict, outfile)
+        json.dump(new, outfile)
 '''
 main combat loop of program. runs through combat dictionary and prompts for various choices
 can also save the combat as json file for later
