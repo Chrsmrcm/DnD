@@ -16,7 +16,6 @@ def roll(sides: int,times:int) -> list[int]:
     
     if sides > 0 and times > 0:
         output = []
-        r.seed(t.time())
         for _ in range(times):
             output.append(r.randrange(1,sides+1))
         
@@ -28,6 +27,7 @@ def roll(sides: int,times:int) -> list[int]:
 pulls in premade combat units from a json file
 '''
 def load_premade(combat_dict: dict):
+    r.seed(t.time())
     file_name = input("What is the name of the file? ")
     path = Path.cwd() / "data" / file_name
     with open(path, 'r') as file:
@@ -35,28 +35,31 @@ def load_premade(combat_dict: dict):
     
     #seed combat dictionary w preloads
     for key in data.keys():        
-        combat_dict[key] = [int(data[key]["initiative"])+roll(20,1)[0],int(data[key]["hp"]),data[key]["notes"]]
+        combat_dict[key] = [int(data[key]["initiative"])+roll(20,1)[0],int(data[key]["hp"]),data[key]["notes"],int(data[key]["initiative"])]
+        
     print(f"Loaded {len(data.keys())} characters...")    
+    
 '''
 runs a user input loop for ad hoc character entry
 '''
-def gather_initiatives(combat_dict: dict):
+def gather_initiatives(combat_dict: dict):    
+    r.seed(t.time())
     keep_going = "Y"
     while keep_going.upper() == "Y":
         #start gathering inits
         name = input("Input character name: ")
-        init = input("Input initiative modifier: ")
+        i_mod = input("Input initiative modifier: ")
         hp = input("Input hit points: ")
         notes = input("Input notes: ")
         
         #a little error checking
         try:
-            init = int(init) + roll(20,1)[0]
+            init = int(i_mod) + roll(20,1)[0]
         except ValueError:
             print("Problem converting initiative to number, default 0 entered")
             init = 0
         try:
-            init = int(hp)
+            hp = int(hp)
         except ValueError:
             print("Problem converting hit points to number, default 0 entered")
             hp = 0
@@ -65,7 +68,7 @@ def gather_initiatives(combat_dict: dict):
         while name in combat_dict:
             name = input("That character exists. Input new name: ")
             
-        combat_dict[name] = [init,hp,notes]
+        combat_dict[name] = [init,hp,notes,i_mod]
         keep_going = input("Enter more? Y or N: ")
 '''
 prints the menu of player choices for turns
@@ -81,10 +84,10 @@ def print_menu():
 '''
 changes from key:[val,ues] to key:{val:u,e:s} for easier storage/retrieval
 '''
-def format_dict(combat_dict: dict) -> dict:
+def format_dict(combat_dict: dict) -> dict:#change this to save modifiers
     new = {}
     for key in combat_dict:
-        new[key] = {"initiative":combat_dict[key][0],
+        new[key] = {"initiative":combat_dict[key][3],
                     "hp":combat_dict[key][1],
                     "notes":combat_dict[key][2]}
     return new
@@ -152,11 +155,16 @@ def run_combat(combat_dict: dict):
                     print("Target not found.  Check name and try again: ")
                     print(f"Lineup: {initiative}")
             elif choice == "4":
+                del(combat_dict[player])
                 print(f"{player} has been removed.")
                 turn = False
-                #special case where all characters on hold and current character is removed
+                #special cases all characters on hold or all removed
                 if len(initiative) < 1:
-                    initiative.append(hold.pop(0))
+                    if len(hold) > 0:
+                        initiative.append(hold.pop(0))
+                    else:
+                        print("Congrats, everyone is dead.")
+                        keep_going = False                        
             elif choice == "5":
                 answer = input("Would you like to save? Y or N: ")
                 if answer.upper() == "Y":
