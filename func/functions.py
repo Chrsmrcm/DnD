@@ -1,6 +1,8 @@
-import time as t
+import json as j
 import random as r
-import json
+import sys as s
+import time as t
+import threading as th
 from pathlib import Path
 
 '''
@@ -22,6 +24,18 @@ def roll(sides: int,times:int) -> list[int]:
         return output
     else:
         return [0]        
+'''
+timer function that can be used to time turns
+
+def timer(seconds):    
+    t.sleep(seconds)
+    print("Time is up!")
+    s.exit()
+'''        
+
+'''
+undo function takes in a code to perform a function on the combat dictionary
+'''
 
 '''
 pulls in premade combat units from a json file
@@ -31,7 +45,7 @@ def load_premade(combat_dict: dict):
     file_name = input("What is the name of the file? ")
     path = Path.cwd() / "data" / file_name
     with open(path, 'r') as file:
-        data = json.load(file)    
+        data = j.load(file)    
     
     #seed combat dictionary w preloads
     for key in data.keys():        
@@ -102,7 +116,7 @@ def save(combat_dict: dict):
     new = format_dict(combat_dict)
     
     with open(path, "w") as outfile: 
-        json.dump(new, outfile)
+        j.dump(new, outfile)
 '''
 main combat loop of program. runs through combat dictionary and prompts for various choices
 can also save the combat as json file for later
@@ -134,13 +148,16 @@ def run_combat(combat_dict: dict):
         print_menu()
         
         turn = True
+        #set turn timer here
+        #timer_th = th.Thread(target=timer, args=(120,), daemon = True)
+        #timer_th.start()
         while turn:            
             choice = input("What would you like to do: ")
             if choice == "1" and len(initiative) > 0:
                 hold.append(player)
                 turn = False
             elif choice == "2":
-                combat_dict[player][2] = input("Add new note: ")
+                combat_dict[player][2] = input("Change note to: ")
             elif choice == "3":
                 target = input("What is the target name? ")
                 damage = input("Enter damage (negative values will heal): ")
@@ -173,7 +190,8 @@ def run_combat(combat_dict: dict):
             else:
                 initiative.append(player)
                 turn = False
-            print()
+        
+        #del the timer if it exists
 if __name__ == "__main__":
     
     combat_dict = {"alan":[20,40,"i'm a pretty pony"],"steve":[30,40,"beep"],"Rachel2.0":[18,40,"poisoned af"],"Lori":[999,40,"BEES!"]}

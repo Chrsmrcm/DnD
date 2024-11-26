@@ -28,5 +28,10 @@
         "initiative": 2,
 		"hp": 38,
         "notes": ""
+    },
+    "Pitrov": {
+        "initiative": 1,
+		"hp": 7,
+        "notes": ""
     }
 }
