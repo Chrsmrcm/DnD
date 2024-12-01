@@ -181,7 +181,7 @@ def run_combat(combat_dict: dict):
                     if len(hold) > 0:
                         initiative.append(hold.pop(0))
                     else:
-                        print("Congrats, everyone is dead.")
+                        print("Initiative is empty")
                         keep_going = False
             elif choice == "5":
                 try:
