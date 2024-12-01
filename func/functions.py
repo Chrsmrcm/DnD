@@ -3,6 +3,7 @@ import random as r
 import sys as s
 import time as t
 import threading as th
+import copy as c
 from pathlib import Path
 
 '''
@@ -24,19 +25,7 @@ def roll(sides: int,times:int) -> list[int]:
         return output
     else:
         return [0]        
-'''
-timer function that can be used to time turns
-
-def timer(seconds):    
-    t.sleep(seconds)
-    print("Time is up!")
-    s.exit()
-'''        
-
-'''
-undo function takes in a code to perform a function on the combat dictionary
-'''
-
+        
 '''
 pulls in premade combat units from a json file
 '''
@@ -91,8 +80,9 @@ def print_menu():
     print("\n1) Hold turn")
     print("2) Change note")
     print("3) Log damage")
-    print("4) Remove character")
-    print("5) Quit")
+    print("4) Remove character")    
+    print("5) Undo")
+    print("6) Quit")
     print("Press ENTER to pass turn\n")
 
 '''
@@ -127,6 +117,11 @@ def run_combat(combat_dict: dict):
     hold = [] 
     
     keep_going = True
+    undo_mode = False
+    #variable that limits the number of undo actions
+    past_max = 10
+    #initialize undo queue
+    past = []
     while keep_going:
         #check for characters on hold (if none pass)
         if hold:
@@ -148,10 +143,16 @@ def run_combat(combat_dict: dict):
         print_menu()
         
         turn = True
-        #set turn timer here
-        #timer_th = th.Thread(target=timer, args=(120,), daemon = True)
-        #timer_th.start()
-        while turn:            
+        while turn:
+            #log player,state if buffer not full and not currently undoing
+            #if past is maxed, make room
+            #if not undo mode, log activity
+            if len(past)>past_max:
+                past.pop(-1)
+            if not undo_mode: 
+                event = [player,c.deepcopy(combat_dict),c.deepcopy(initiative),c.deepcopy(hold)]
+                past.insert(0,event)            
+        
             choice = input("What would you like to do: ")
             if choice == "1" and len(initiative) > 0:
                 hold.append(player)
@@ -181,8 +182,21 @@ def run_combat(combat_dict: dict):
                         initiative.append(hold.pop(0))
                     else:
                         print("Congrats, everyone is dead.")
-                        keep_going = False                        
+                        keep_going = False
             elif choice == "5":
+                try:
+                    #enter undo mode
+                    undo_mode = True
+                    #pop front of past stackm to reset initiative, combat_dict andh old queue
+                    #event = past.pop(0)
+                    player,combat_dict,initiative,hold = past.pop(0)
+                    initiative.insert(0,player)
+                    #end turn to reset
+                    turn = False
+                except IndexError:
+                    print("Undo queue is empty")
+                    
+            elif choice == "6":
                 answer = input("Would you like to save? Y or N: ")
                 if answer.upper() == "Y":
                     save(combat_dict)
@@ -190,8 +204,12 @@ def run_combat(combat_dict: dict):
             else:
                 initiative.append(player)
                 turn = False
-        
-        #del the timer if it exists
+                
+            if choice != "5":
+                undo_mode = False
+            
+            
+            
 if __name__ == "__main__":
     
     combat_dict = {"alan":[20,40,"i'm a pretty pony"],"steve":[30,40,"beep"],"Rachel2.0":[18,40,"poisoned af"],"Lori":[999,40,"BEES!"]}
