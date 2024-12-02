@@ -107,6 +107,41 @@ def save(combat_dict: dict):
     
     with open(path, "w") as outfile: 
         j.dump(new, outfile)
+
+'''
+logs damage to the combat dict to each player in the list of targets
+if the list of targets is empty, it assigns the listed damage to ALL
+'''
+def damage(targets: str,amount: int,combat_dict: dict):
+    try:
+        amount = int(amount)
+        print(amount)
+    except ValueError:
+        print("Error with amount, must be int, operation aborted")
+        return 0
+    
+    try:
+        if targets:
+            for target in targets.split(','):
+                try:
+                    combat_dict[target][1] -= amount
+                    print(f"{target} is now at {combat_dict[target][1]} hitpoints")
+                except KeyError:
+                    print(f"{target} not found.  No change made.")
+        else:
+            for target in combat_dict.keys():
+                combat_dict[target][1] -= amount
+                print(f"{target} is now at {combat_dict[target][1]} hitpoints")
+    except:
+        print("Error in damage assignment to list")
+        
+'''
+removes a player from the combat dictionary
+'''
+def remove(player: str,combat_dict: dict):
+    del(combat_dict[player])
+    print(f"{player} has been removed.")
+    
 '''
 main combat loop of program. runs through combat dictionary and prompts for various choices
 can also save the combat as json file for later
@@ -159,43 +194,29 @@ def run_combat(combat_dict: dict):
                 turn = False
             elif choice == "2":
                 combat_dict[player][2] = input("Change note to: ")
-            elif choice == "3":
-                target = input("What is the target name? ")
-                damage = input("Enter damage (negative values will heal): ")
-                try:
-                    damage = int(damage)
-                except ValueError:
-                    damage = 0
-                try:
-                    combat_dict[target][1] -= damage
-                    print(f"{target} is now at {combat_dict[target][1]} hitpoints")
-                except KeyError:
-                    print("Target not found.  Check name and try again: ")
-                    print(f"Lineup: {initiative}")
+            elif choice == "3":                
+                targets = input("What are the target names? (Enter multiple values separated by commas or leave blank for ALL):")
+                amount = input("Enter damage (negative values will heal): ")
+                damage(targets,amount,combat_dict)
             elif choice == "4":
-                del(combat_dict[player])
-                print(f"{player} has been removed.")
-                turn = False
+                remove(player,combat_dict)                
                 #special cases all characters on hold or all removed
                 if len(initiative) < 1:
                     if len(hold) > 0:
                         initiative.append(hold.pop(0))
                     else:
                         print("Initiative is empty")
-                        keep_going = False
+                        keep_going = False                        
+                turn = False
+            #enter undo mode pop past to reset initiative, combat_dict and hold
             elif choice == "5":
-                try:
-                    #enter undo mode
+                try:                    
                     undo_mode = True
-                    #pop front of past stackm to reset initiative, combat_dict andh old queue
-                    #event = past.pop(0)
                     player,combat_dict,initiative,hold = past.pop(0)
                     initiative.insert(0,player)
-                    #end turn to reset
                     turn = False
                 except IndexError:
-                    print("Undo queue is empty")
-                    
+                    print("Undo queue is empty")                    
             elif choice == "6":
                 answer = input("Would you like to save? Y or N: ")
                 if answer.upper() == "Y":
