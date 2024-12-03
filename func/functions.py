@@ -46,7 +46,7 @@ def load_premade(combat_dict: dict):
 runs a user input loop for ad hoc character entry
 '''
 def gather_initiatives(combat_dict: dict):    
-    r.seed(t.time())
+    
     keep_going = "Y"
     while keep_going.upper() == "Y":
         #start gathering inits
@@ -82,7 +82,8 @@ def print_menu():
     print("3) Log damage")
     print("4) Remove character")    
     print("5) Undo")
-    print("6) Quit")
+    print("6) Add Players")
+    print("7) Quit")
     print("Press ENTER to pass turn\n")
 
 '''
@@ -147,7 +148,7 @@ main combat loop of program. runs through combat dictionary and prompts for vari
 can also save the combat as json file for later
 '''
 def run_combat(combat_dict: dict):
-    #build initiative list by grabbing max value[0] and iterate up the list pushing names onto initiative
+    
     initiative = sorted(combat_dict, key=combat_dict.get)
     hold = [] 
     
@@ -216,8 +217,18 @@ def run_combat(combat_dict: dict):
                     initiative.insert(0,player)
                     turn = False
                 except IndexError:
-                    print("Undo queue is empty")                    
+                    print("Undo queue is empty") 
+            #add players
             elif choice == "6":
+                '''
+                ideally would be using gather_initiatives again but we
+                need to keep track of the new entries to work into either
+                the existing init or to be put in hold. this will require
+                either copying the gather function's code again or reworking
+                the function
+                '''
+                pass       
+            elif choice == "7":
                 answer = input("Would you like to save? Y or N: ")
                 if answer.upper() == "Y":
                     save(combat_dict)
@@ -228,10 +239,3 @@ def run_combat(combat_dict: dict):
                 
             if choice != "5":
                 undo_mode = False
-            
-            
-            
-if __name__ == "__main__":
-    
-    combat_dict = {"alan":[20,40,"i'm a pretty pony"],"steve":[30,40,"beep"],"Rachel2.0":[18,40,"poisoned af"],"Lori":[999,40,"BEES!"]}
-    run_combat(combat_dict)
