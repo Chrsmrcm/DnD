@@ -15,4 +15,5 @@ if live.upper() == 'Y':
     gather_initiatives(combat_dict)
 
 #start the combat loop
-run_combat(combat_dict)
+if combat_dict:
+    run_combat(combat_dict)
