@@ -1,4 +1,5 @@
 from func.functions import *
+from func.run_combat import *
 
 combat_dict = {}
 

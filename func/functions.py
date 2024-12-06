@@ -2,7 +2,6 @@ import json as j
 import random as r
 import sys as s
 import time as t
-import threading as th
 import copy as c
 from pathlib import Path
 
@@ -41,11 +40,12 @@ def load_premade(combat_dict: dict):
         combat_dict[key] = [int(data[key]["initiative"])+roll(20,1)[0],int(data[key]["hp"]),data[key]["notes"],int(data[key]["initiative"])]
         
     print(f"Loaded {len(data.keys())} characters...")    
-    
+
+
 '''
 runs a user input loop for ad hoc character entry
 '''
-def gather_initiatives(combat_dict: dict):    
+def gather_initiatives(combat_dict: dict,in_prog: bool=False,hold: list=[]):    
     
     keep_going = "Y"
     while keep_going.upper() == "Y":
@@ -72,6 +72,8 @@ def gather_initiatives(combat_dict: dict):
             name = input("That character exists. Input new name: ")
             
         combat_dict[name] = [init,hp,notes,i_mod]
+        if in_prog:
+            hold.append(name)
         keep_going = input("Enter more? Y or N: ")
 '''
 prints the menu of player choices for turns
@@ -83,7 +85,8 @@ def print_menu():
     print("4) Remove character")    
     print("5) Undo")
     print("6) Add Players")
-    print("7) Quit")
+    print("7) Full Report")
+    print("8) Quit")
     print("Press ENTER to pass turn\n")
 
 '''
@@ -116,7 +119,6 @@ if the list of targets is empty, it assigns the listed damage to ALL
 def damage(targets: str,amount: int,combat_dict: dict):
     try:
         amount = int(amount)
-        print(amount)
     except ValueError:
         print("Error with amount, must be int, operation aborted")
         return 0
@@ -142,100 +144,9 @@ removes a player from the combat dictionary
 def remove(player: str,combat_dict: dict):
     del(combat_dict[player])
     print(f"{player} has been removed.")
-    
+
 '''
-main combat loop of program. runs through combat dictionary and prompts for various choices
-can also save the combat as json file for later
-'''
-def run_combat(combat_dict: dict):
-    
-    initiative = sorted(combat_dict, key=combat_dict.get)
-    hold = [] 
-    
-    keep_going = True
-    undo_mode = False
-    #variable that limits the number of undo actions
-    past_max = 10
-    #initialize undo queue
-    past = []
-    while keep_going:
-        #check for characters on hold (if none pass)
-        if hold:
-            print("Currently these characters are holding their turns:")
-            for i in range(len(hold)):
-                print(f"{i}) {hold[i]}")
-                
-            answer = input("\nEnter a valid choice to take turn or press ENTER to pass to normal initiative: ")
-            try:
-                answer = int(answer)
-                initiative.insert(0,hold.pop(answer))
-            except:
-                pass
-        #display current turn
-        player = initiative.pop(0)
-        print("=======================Start Turn=============================")
-        print(f"{player}:\n HP: {combat_dict[player][1]}\n Notes: {combat_dict[player][2]}\n")
-        print(f"Lineup: {initiative}")
-        print_menu()
-        
-        turn = True
-        while turn:
-            #log player,state if buffer not full and not currently undoing
-            #if past is maxed, make room
-            #if not undo mode, log activity
-            if len(past)>past_max:
-                past.pop(-1)
-            if not undo_mode: 
-                event = [player,c.deepcopy(combat_dict),c.deepcopy(initiative),c.deepcopy(hold)]
-                past.insert(0,event)            
-        
-            choice = input("What would you like to do: ")
-            if choice == "1" and len(initiative) > 0:
-                hold.append(player)
-                turn = False
-            elif choice == "2":
-                combat_dict[player][2] = input("Change note to: ")
-            elif choice == "3":                
-                targets = input("What are the target names? (Enter multiple values separated by commas or leave blank for ALL):")
-                amount = input("Enter damage (negative values will heal): ")
-                damage(targets,amount,combat_dict)
-            elif choice == "4":
-                remove(player,combat_dict)                
-                #special cases all characters on hold or all removed
-                if len(initiative) < 1:
-                    if len(hold) > 0:
-                        initiative.append(hold.pop(0))
-                    else:
-                        print("Initiative is empty")
-                        keep_going = False                        
-                turn = False
-            #enter undo mode pop past to reset initiative, combat_dict and hold
-            elif choice == "5":
-                try:                    
-                    undo_mode = True
-                    player,combat_dict,initiative,hold = past.pop(0)
-                    initiative.insert(0,player)
-                    turn = False
-                except IndexError:
-                    print("Undo queue is empty") 
-            #add players
-            elif choice == "6":
-                '''
-                ideally would be using gather_initiatives again but we
-                need to keep track of the new entries to work into either
-                the existing init or to be put in hold. this will require
-                either copying the gather function's code again or reworking
-                the function
-                '''
-                pass       
-            elif choice == "7":
-                answer = input("Would you like to save? Y or N: ")
-                if answer.upper() == "Y":
-                    save(combat_dict)
-                keep_going, turn = False, False
-            else:
-                initiative.append(player)
-                turn = False
-                
-            if choice != "5":
-                undo_mode = False
+prints out a given character, their hp, and any notes
+'''  
+def report(player: str,combat_dict: dict):
+    print(f"{player}:\n HP: {combat_dict[player][1]}\n Notes: {combat_dict[player][2]}\n")
