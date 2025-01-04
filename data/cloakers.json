@@ -1,0 +1,17 @@
+{
+    "cloaker1": {
+        "initiative": 2,
+		"hp": 78,
+        "notes": "AC 14, bite +6 2d6+3 and attach (DC16 str to remove) suffocate and blind, tail +6 1d8+3, DC13 wis fear moan, 3 phantasms (1/4 chance of targeting them)"
+    },
+	"cloaker2": {
+        "initiative": 2,
+		"hp": 78,
+        "notes": "AC 14, bite +6 2d6+3 and attach (DC16 str to remove) suffocate and blind, tail +6 1d8+3, DC13 wis fear moan, 3 phantasms (1/4 chance of targeting them)"
+    },
+	"cloaker3": {
+        "initiative": 2,
+		"hp": 78,
+        "notes": "AC 14, bite +6 2d6+3 and attach (DC16 str to remove) suffocate and blind, tail +6 1d8+3, DC13 wis fear moan, 3 phantasms (1/4 chance of targeting them)"
+    }
+}

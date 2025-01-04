@@ -1,0 +1,38 @@
+{
+    
+    "soldier1": {
+        "initiative": 1,
+		"hp": 84,
+        "notes": "AC 18, resistance to conventional weapons, 2 axe +7 2d6+4"
+    },
+	"soldier2": {
+        "initiative": 1,
+		"hp": 84,
+        "notes": "AC 18, resistance to conventional weapons, 2 axe +7 2d6+4"
+    },
+	"bowman1": {
+        "initiative": 2,
+		"hp": 62,
+        "notes": "AC 16, flashbang DC15 or dazed in 10ft, 3 repeater crossbow +5 1d8+5, disengage as bonus action"
+    },
+	"bowman2": {
+        "initiative": 2,
+		"hp": 62,
+        "notes": "AC 16, flashbang DC15 or dazed in 10ft, 3 repeater crossbow +5 1d8+5, disengage as bonus action"
+    },
+	"bowman3": {
+        "initiative": 2,
+		"hp": 62,
+        "notes": "AC 16, flashbang DC15 or dazed in 10ft, 3 repeater crossbow +5 1d8+5, disengage as bonus action"
+    },
+	"mage1": {
+        "initiative": 0,
+		"hp": 55,
+        "notes": "AC 16, firebolt +7 2d6+5, darkness, charm person, cone of cold, gaseous form, sleep, regen 10, polymorph"
+    },
+	"mage2": {
+        "initiative": 0,
+		"hp": 55,
+        "notes": "AC 16, firebolt +7 2d6+5, fireball, fly, lightning bolt, cone of cold, gaseous form, sleep, wall of fire"
+    }
+}

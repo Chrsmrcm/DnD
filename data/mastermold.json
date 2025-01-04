@@ -1,0 +1,12 @@
+{
+    "mastermold": {
+        "initiative": 4,
+		"hp": 140,
+        "notes": "AC 12, adaptive resistance, after each player take 1 action(create miner, direct miner, detonate miner (DC 16 dex or 5d6 fire damage), heat up (1D6 fire damage per stack))"
+    },
+	"miner": {
+        "initiative": 0,
+		"hp": 20,
+        "notes": "AC 16, adaptive resistance that of mastermold, 2 +8 drill 2d6+4, charge launcher 2d6 in 5ft spread"
+    }
+}

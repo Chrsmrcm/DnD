@@ -1,0 +1,22 @@
+{
+    "roper1": {
+        "initiative": -1,
+		"hp": 93,
+        "notes": "AC 20, 4 tendrils +7 autograppel (DC 15 escape) bite +7 4d8+4"
+    },
+    "roper2": {
+        "initiative": -1,
+		"hp": 93,
+        "notes": "AC 20, 4 tendrils +7 autograppel (DC 15 escape) bite +7 4d8+4"
+    },
+	"roper3": {
+        "initiative": -1,
+		"hp": 93,
+        "notes": "AC 20, 4 tendrils +7 autograppel (DC 15 escape) bite +7 4d8+4"
+    },
+	"roper4": {
+        "initiative": -1,
+		"hp": 93,
+        "notes": "AC 20, 4 tendrils +7 autograppel (DC 15 escape) bite +7 4d8+4"
+    }
+}
